@@ -20,7 +20,7 @@ TOGETHER_API_URL = "https://api.together.xyz/inference"
 TOGETHER_API_TOKEN = os.getenv("TOGETHER_API_TOKEN", "")
 
 
-async def get_ai_response(
+def get_ai_response(
     user_message: str,
     resume_context: str,
     conversation_history: Optional[list] = None
