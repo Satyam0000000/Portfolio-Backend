@@ -31,5 +31,5 @@ env/
 *.log
 *.pot
 *.mo
-requirements.txt
+
 RENDER_DEPLOYMENT.md
