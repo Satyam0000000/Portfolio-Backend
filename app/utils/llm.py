@@ -38,14 +38,36 @@ def get_ai_response(
     """
     
     # Build the system prompt with resume context
-    system_prompt = f"""You are an intelligent AI assistant representing Satyam Goswami, a Full Stack Developer and Cybersecurity Enthusiast. 
-You have access to Satyam's resume and project information. Answer questions about his skills, experience, and projects based on the context provided.
-Be professional, concise, and helpful. If you don't have information, say so honestly.
+    system_prompt = f"""
+You are Satyam Goswami’s personal AI assistant.
+
+Identity:
+- Name: Satyam Goswami
+- Role: AI-focused Full Stack Developer, Ex-AI/ML Research Intern at IIT Ropar
+- Education: B.Tech, NIT Jalandhar (2023–2027)
+
+Rules you MUST follow:
+- Always answer in first person (“I built…”, “I worked…”).
+- Be confident, specific, and resume-grounded.
+- NEVER reply with generic phrases like “Feel free to ask” or “That’s an interesting question”.
+- If the user greets (hi/hello/hloo), respond with a strong self-introduction using my background.
+- If unsure, ask a clarifying question instead of giving a vague response.
 
 RESUME CONTEXT:
 {resume_context}
 
-Remember to be friendly and encourage people to visit the portfolio or contact directly for more detailed discussions."""
+Preferred closing style:
+- Invite the user to explore projects, internships, or contact details naturally (not pushy).
+"""
+
+    # Short-circuit for greetings
+    if user_message.lower().strip() in ["hi", "hello", "hloo", "hey", "hola"]:
+        return (
+            "Hi! I’m Satyam Goswami, a full-stack developer and Ex-AI/ML research intern at IIT Ropar, "
+            "currently pursuing my B.Tech at NIT Jalandhar. I’ve built production-grade platforms like "
+            "Tarang and worked on AI-based UAV intrusion detection systems. "
+            "What would you like to know — projects, internships, or technical skills?"
+        )
 
     # Try Hugging Face API first
     if HF_API_TOKEN:
@@ -100,7 +122,7 @@ def _get_huggingface_response(
         "inputs": [{"role": msg["role"], "content": msg["content"]} for msg in messages],
         "parameters": {
             "max_new_tokens": 500,
-            "temperature": 0.7,
+            "temperature": 0.4,
             "top_p": 0.95,
         }
     }
@@ -142,7 +164,7 @@ def _get_together_response(
         "model": "mistralai/Mistral-7B-Instruct-v0.1",
         "messages": messages,
         "max_tokens": 500,
-        "temperature": 0.7,
+        "temperature": 0.4,
     }
     
     response = requests.post(TOGETHER_API_URL, json=payload, headers=headers, timeout=30)
@@ -173,6 +195,14 @@ def _get_fallback_response(user_message: str, resume_context: str) -> str:
         return "You can contact me at satyamgoswami2705@gmail.com. I'm always open to discussing interesting projects and opportunities!"
     
     if any(word in message_lower for word in ["hi", "hello", "hey", "greetings"]):
-        return "Hello! I'm Satyam, a Full Stack Developer and Cybersecurity Enthusiast. Feel free to ask me anything about my skills, experience, or projects!"
+        return (
+            "Hi! I’m Satyam Goswami, a full-stack developer at NIT Jalandhar and former AI/ML research intern at IIT Ropar. "
+            "I work on AI-driven security systems, full-stack web platforms, and real-world products like Tarang. "
+            "What would you like to explore?"
+        )
     
-    return "That's an interesting question! Feel free to ask me about my skills, experience, projects, or how to contact me. I'm here to help!"
+    return (
+        "I can help you with my projects (Tarang, Snack Delivery), my AI research at IIT Ropar, "
+        "or my technical skills in React, Node.js, ML, and cybersecurity. "
+        "Could you tell me what you’d like to focus on?"
+    )
