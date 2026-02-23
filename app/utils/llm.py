@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-HF_API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
+HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
 
 
@@ -113,24 +113,18 @@ def _get_huggingface_response(
     }
     
     payload = {
-        "inputs": [{"role": msg["role"], "content": msg["content"]} for msg in messages],
-        "parameters": {
-            "max_new_tokens": 500,
-            "temperature": 0.4,
-            "top_p": 0.95,
-        }
+        "model": "mistralai/Mistral-7B-Instruct-v0.2",
+        "messages": messages,
+        "max_tokens": 500,
+        "temperature": 0.4,
+        "top_p": 0.95
     }
     
     response = requests.post(HF_API_URL, json=payload, headers=headers, timeout=30)
     response.raise_for_status()
     
     result = response.json()
-    
-    
-    if isinstance(result, list) and len(result) > 0:
-        return result[0].get("generated_text", "I couldn't generate a response.")
-    
-    return "I couldn't generate a response."
+    return result["choices"][0]["message"]["content"]
 
 
 def _get_together_response(
