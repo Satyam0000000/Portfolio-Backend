@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+HF_API_URL = "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2"
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
 
 
@@ -20,7 +20,7 @@ def get_ai_response(
     conversation_history: Optional[list] = None
 ) -> str:
     """
-    Get AI response using Hugging Face Inference API (Free)
+    Get AI response using Hugging Face Router Inference API
     
     Args:
         user_message: User's question/message
@@ -96,7 +96,7 @@ def _get_huggingface_response(
     system_prompt: str,
     conversation_history: Optional[list] = None
 ) -> str:
-    """Get response from Hugging Face Inference API"""
+    """Get response from Hugging Face Router Inference API"""
     
     messages = [
         {"role": "system", "content": system_prompt}
