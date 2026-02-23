@@ -1,8 +1,3 @@
-"""
-FastAPI main application
-AI Chat Agent for Portfolio
-"""
-
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,17 +5,17 @@ from dotenv import load_dotenv
 
 from app.api import chat
 
-# Load environment variables
+
 load_dotenv()
 
-# Initialize FastAPI app
+
 app = FastAPI(
     title="Portfolio AI Chat Agent",
     description="AI-powered chat agent that answers questions about Satyam Goswami's resume and projects",
     version="1.0.0"
 )
 
-# Configure CORS
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -33,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
+
 app.include_router(chat.router)
 
 

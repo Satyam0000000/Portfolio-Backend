@@ -1,8 +1,3 @@
-"""
-LLM integration using Hugging Face Inference API (Free)
-Supports multiple free models without requiring API keys for inference
-"""
-
 import os
 import requests
 from typing import Optional
@@ -10,12 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Using Hugging Face Inference API - Free tier available
-# Models available: mistral-7b, zephyr-7b, neural-chat-7b, etc.
+
 HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
 
-# Alternative: Using Together.ai (also free with generous limits)
+
 TOGETHER_API_URL = "https://api.together.xyz/inference"
 TOGETHER_API_TOKEN = os.getenv("TOGETHER_API_TOKEN", "")
 
@@ -37,7 +31,7 @@ def get_ai_response(
         AI generated response
     """
     
-    # Build the system prompt with resume context
+    
     system_prompt = f"""
 You are Satyam Goswami’s personal AI assistant.
 
@@ -60,7 +54,7 @@ Preferred closing style:
 - Invite the user to explore projects, internships, or contact details naturally (not pushy).
 """
 
-    # Short-circuit for greetings
+    
     if user_message.lower().strip() in ["hi", "hello", "hloo", "hey", "hola"]:
         return (
             "Hi! I’m Satyam Goswami, a full-stack developer and Ex-AI/ML research intern at IIT Ropar, "
@@ -69,7 +63,7 @@ Preferred closing style:
             "What would you like to know — projects, internships, or technical skills?"
         )
 
-    # Try Hugging Face API first
+   
     if HF_API_TOKEN:
         try:
             response = _get_huggingface_response(
@@ -81,7 +75,7 @@ Preferred closing style:
         except Exception as e:
             print(f"HF API error: {e}")
     
-    # Fallback to Together.ai
+    
     if TOGETHER_API_TOKEN:
         try:
             response = _get_together_response(
@@ -93,7 +87,7 @@ Preferred closing style:
         except Exception as e:
             print(f"Together API error: {e}")
     
-    # Fallback: Rule-based response
+   
     return _get_fallback_response(user_message, resume_context)
 
 
@@ -132,7 +126,7 @@ def _get_huggingface_response(
     
     result = response.json()
     
-    # Parse response based on API return format
+    
     if isinstance(result, list) and len(result) > 0:
         return result[0].get("generated_text", "I couldn't generate a response.")
     
@@ -181,7 +175,7 @@ def _get_fallback_response(user_message: str, resume_context: str) -> str:
     """
     message_lower = user_message.lower()
     
-    # Simple keyword-based responses
+    
     if any(word in message_lower for word in ["skill", "technology", "tech", "know"]):
         return "I have expertise in React, Node.js, MongoDB, Python, and modern web development. I'm also experienced in cybersecurity and machine learning. Ask me about any specific technology!"
     

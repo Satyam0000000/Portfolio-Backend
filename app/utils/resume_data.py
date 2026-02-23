@@ -1,7 +1,3 @@
-"""
-Resume knowledge base for the AI agent
-This data is used to provide context-aware responses about Satyam's experience
-"""
 
 RESUME_DATA = {
     "name": "Satyam Goswami",

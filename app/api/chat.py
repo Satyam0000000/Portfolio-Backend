@@ -1,7 +1,3 @@
-"""
-Chat API endpoint for the AI agent
-"""
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
@@ -43,7 +39,7 @@ class ConversationStore:
         return self.conversations.get(conversation_id, [])
 
 
-# Initialize conversation store
+
 conversation_store = ConversationStore()
 
 
@@ -62,23 +58,23 @@ async def chat(chat_input: ChatMessage) -> ChatResponse:
         HTTPException: If message is empty or processing fails
     """
     
-    # Validate input
+    
     if not chat_input.message or not chat_input.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
     user_message = chat_input.message.strip()
     
-    # Generate or use provided conversation ID
+  
     conversation_id = chat_input.conversation_id or "default"
     
     try:
-        # Get resume context
+       
         resume_context = get_resume_context()
         
-        # Get conversation history
+        
         conversation_history = conversation_store.get_history(conversation_id)
         
-        # Get AI response with timeout
+      
         try:
             ai_response = await asyncio.wait_for(
                 asyncio.to_thread(
@@ -95,7 +91,7 @@ async def chat(chat_input: ChatMessage) -> ChatResponse:
                 detail="AI service took too long to respond. Please try again."
             )
         
-        # Store messages in conversation history
+        
         conversation_store.add_message(conversation_id, "user", user_message)
         conversation_store.add_message(conversation_id, "assistant", ai_response)
         
